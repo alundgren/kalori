@@ -1,12 +1,18 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Xml.Linq;
 
 namespace lv_data_transformer
 {
     class Program
     {
+        private static string GetValue(XElement source, string name) 
+        {
+            return source.Elements().Single(x => x.Name.LocalName == name).Value;
+        }
+
         static void Main(string[] args)
         {
             var zipfilename = args.Length > 0 ? args[0] : @"..\data\Livsmedelsverket-Naringsvarden-20171215.zip";
@@ -16,6 +22,18 @@ namespace lv_data_transformer
                 ZipFile.ExtractToDirectory(zipfilename, tempFolder);
                 var xmlfilename = Path.Combine(tempFolder, "Livsmedelsverket-Naringsvarden-20171215.xml");
                 var document = XDocument.Load(xmlfilename);
+                var items = document.Descendants().Where(x => x.Name.LocalName == "Livsmedel").Select(x => 
+                    {
+                        var nv = x.Elements().Single(y => y.Name.LocalName == "Naringsvarden");
+                        return new 
+                        {
+                            Namn = GetValue(x, "Namn"),
+                            ViktGram = GetValue(x, "ViktGram"),
+                            Kcal = GetValue(nv.Elements().Where(y => GetValue(y, "Namn") == "Energi (kcal)").Single(), "Varde")
+                        };
+                    });
+                foreach(var i in items)
+                    Console.WriteLine($"{i.Namn}: {i.Kcal}");
                 /*
                     Structure
                     LivsmedelDataset 1:1 (Version, LivsmedelsLista)
