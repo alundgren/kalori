@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Xml.Linq;
+using Newtonsoft.Json;
 
 namespace lv_data_transformer
 {
@@ -22,6 +24,9 @@ namespace lv_data_transformer
                 ZipFile.ExtractToDirectory(zipfilename, tempFolder);
                 var xmlfilename = Path.Combine(tempFolder, "Livsmedelsverket-Naringsvarden-20171215.xml");
                 var document = XDocument.Load(xmlfilename);
+                Func<string, int> parseDecimal = x => 
+                    (int)Math.Ceiling(decimal.Parse(x?.Replace(",", "."), NumberStyles.Number, CultureInfo.InvariantCulture));
+
                 var items = document.Descendants().Where(x => x.Name.LocalName == "Livsmedel").Select(x => 
                     {
                         var nv = x.Elements().Single(y => y.Name.LocalName == "Naringsvarden");
@@ -29,11 +34,29 @@ namespace lv_data_transformer
                         {
                             Namn = GetValue(x, "Namn"),
                             ViktGram = GetValue(x, "ViktGram"),
-                            Kcal = GetValue(nv.Elements().Where(y => GetValue(y, "Namn") == "Energi (kcal)").Single(), "Varde")
+                            Kcal = parseDecimal(GetValue(nv.Elements().Where(y => GetValue(y, "Namn") == "Energi (kcal)").Single(), "Varde")),
+                            Protein = parseDecimal(GetValue(nv.Elements().Where(y => GetValue(y, "Namn") == "Protein").Single(), "Varde")),
+                            Fett = parseDecimal(GetValue(nv.Elements().Where(y => GetValue(y, "Namn") == "Fett").Single(), "Varde")),
+                            Kolhydrater = parseDecimal(GetValue(nv.Elements().Where(y => GetValue(y, "Namn") == "Kolhydrater").Single(), "Varde")),
                         };
-                    });
-                foreach(var i in items)
-                    Console.WriteLine($"{i.Namn}: {i.Kcal}");
+                    }).Where(x => x.ViktGram == "100").Select(x => new [] { x.Namn, x.Kcal.ToString(), x.Protein.ToString(), x.Fett.ToString(), x.Kolhydrater.ToString() } ) ;
+
+                var result = new string[][] {new string [] { "Kcal", "Protein", "Fett", "Kolhydrater"}}.Union(items).ToArray();
+
+                var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                Directory.CreateDirectory(tempDir);
+                try 
+                {
+                    File.WriteAllText(Path.Combine(tempDir, "naringsvarden.json"), JsonConvert.SerializeObject(result));
+                    ZipFile.CreateFromDirectory(tempDir, args.Length > 1 ? args[1] : @"..\data\Livsmedelsverket-Naringsvarden-20171215-Compacted.zip");
+                }
+                catch 
+                {
+                    try { Directory.Delete(tempDir); } catch { /* ignored */ }
+                }
+
+                
+
                 /*
                     Structure
                     LivsmedelDataset 1:1 (Version, LivsmedelsLista)
