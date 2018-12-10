@@ -1,9 +1,11 @@
 <div>
-  <ng-template #rt let-r="result" let-t="term">
-    <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
-    <span>&nbsp;</span>
-    <span><b>{{r.kcal}}</b></span>
-  </ng-template>
-  
-  <input id="typeahead-template" type="text" class="form-control" [(ngModel)]="model" [ngbTypeahead]="search" [resultTemplate]="rt" [inputFormatter]="formatter" placeholder="Varunamn, t ex apelsin" />
+  <form>
+      <input type="text" class="form-control" [formControl]="searchInput"  placeholder="Varunamn, t ex apelsin" />
+  </form>
+  <table class="table table-striped">
+    <tr *ngFor="let r of searchResults">
+      <td>{{r.name}}</td>
+      <td>{{r.kcal}}</td>
+    </tr>
+  </table>
 </div>

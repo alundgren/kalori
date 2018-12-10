@@ -1,31 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import { LsvDbService } from '../lsv-db.service';
-import { Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { Component, OnInit, SimpleChanges } from '@angular/core';
+import { LsvDbService, SearchEntry } from '../lsv-db.service';
+import { FormControl } from '@angular/forms';
+
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.css'],
-  providers: [LsvDbService],
-  styles: [`.form-control { width: 600px; }`]
+  providers: [LsvDbService]
 })
 export class SearchComponent implements OnInit {
 
-  constructor(private lsvDbService: LsvDbService) { }
+  constructor(private lsvDbService: LsvDbService) { }   
 
-  public model : any
+  searchInput: FormControl = new FormControl()
+  searchResults: SearchEntry[]
 
   ngOnInit() {
+    this.searchInput
+      .valueChanges
+      .subscribe(searchText => this.searchResults = this.lsvDbService.search(searchText, 7));
   }
-
-  search = (text$: Observable<string>) =>
-    text$.pipe(
-      debounceTime(200),
-      map(term => term === '' ? []
-        : this.lsvDbService.search(term, 7))
-    )
-
-  formatter = (x: {name: string}) => x.name
-
 }
