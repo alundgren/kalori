@@ -1,3 +1,9 @@
-<p>
-  search works!
-</p>
+<div>
+  <ng-template #rt let-r="result" let-t="term">
+    <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
+    <span>&nbsp;</span>
+    <span><b>{{r.kcal}}</b></span>
+  </ng-template>
+  
+  <input id="typeahead-template" type="text" class="form-control" [(ngModel)]="model" [ngbTypeahead]="search" [resultTemplate]="rt" [inputFormatter]="formatter" placeholder="Varunamn, t ex apelsin" />
+</div>

@@ -1,39 +1,31 @@
 import { Component, OnInit } from '@angular/core';
-
-import * as naringsvardenJson from '../../assets/naringsvarden.json';
-
-//Entries are: ["Name", "Kcal","Protein","Fett","Kolhydrater"]
-let naringsvarden : string[][] = (naringsvardenJson as any).default;
-
-let search = (nameFragment : string, maxCount: number) => {
-  let n = nameFragment.toLocaleLowerCase();
-  let hits = []
-  console.log(naringsvarden)
-  for(let v of naringsvarden) {
-    let name = v[0];    
-    if(name.toLocaleLowerCase().includes(n)) {
-      hits.push({
-        name: name,
-        kcal: v[1]
-      })
-      if(hits.length === maxCount) {
-        return hits
-      }
-    }
-  }
-  return hits
-}
+import { LsvDbService } from '../lsv-db.service';
+import { Observable } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
-  styleUrls: ['./search.component.css']
+  styleUrls: ['./search.component.css'],
+  providers: [LsvDbService],
+  styles: [`.form-control { width: 600px; }`]
 })
 export class SearchComponent implements OnInit {
 
-  constructor() { }
+  constructor(private lsvDbService: LsvDbService) { }
+
+  public model : any
 
   ngOnInit() {
   }
+
+  search = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
+      map(term => term === '' ? []
+        : this.lsvDbService.search(term, 7))
+    )
+
+  formatter = (x: {name: string}) => x.name
 
 }
