@@ -19,6 +19,12 @@ export class SearchComponent implements OnInit {
   ngOnInit() {
     this.searchInput
       .valueChanges
-      .subscribe(searchText => this.searchResults = this.lsvDbService.search(searchText, 7));
+      .subscribe(searchText => {
+        if(searchText && searchText.length > 1) {
+          this.searchResults = this.lsvDbService.search(searchText, 100)
+        } else {
+          this.searchResults = []
+        }
+      });
   }
 }
