@@ -1,6 +1,10 @@
 <div>
   <form>
-      <input type="text" class="form-control" [formControl]="searchInput"  placeholder="Varunamn, t ex apelsin" />
+      <div class="form-group">
+          <input type="text" class="form-control" [formControl]="searchInput" placeholder="Varunamn, t ex apelsin" autocomplete="off" />
+          <span class="fa fa-remove"></span>
+      </div>  
+      
   </form>
   <table class="table table-striped">
     <tr *ngFor="let r of searchResults">
