@@ -9,7 +9,9 @@ TODO:
 
 - Clear button for the search field. Make it work. Hide when empty.
 - Move FA to local dependancy
-- Icon
+- favicon and title
+- left corner logo and site link
+- github link in bottom if scrolling/paging can be made to work better
 - Word order search
 - Possibly metaphone or similar
 - Better solution for the clear icon. The margin pixel hack feels sucky.
