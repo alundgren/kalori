@@ -15,6 +15,7 @@ export class SearchComponent implements OnInit {
 
   searchInput: FormControl = new FormControl()
   searchResults: SearchEntry[]
+  searchText: string
 
   ngOnInit() {
     this.searchInput
@@ -26,5 +27,9 @@ export class SearchComponent implements OnInit {
           this.searchResults = []
         }
       });
+  }
+
+  clearSearchInput() {
+    this.searchText = ''
   }
 }
