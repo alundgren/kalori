@@ -1,6 +1,6 @@
 import { Component, OnInit, SimpleChanges } from '@angular/core';
 import { LsvDbService, SearchEntry } from '../lsv-db.service';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup, Validators, AbstractControl } from '@angular/forms';
 
 
 @Component({
@@ -11,14 +11,19 @@ import { FormControl } from '@angular/forms';
 })
 export class SearchComponent implements OnInit {
 
-  constructor(private lsvDbService: LsvDbService) { }   
+  constructor(private lsvDbService: LsvDbService) {  }   
+  
+  form = new FormGroup({
+    searchText: new FormControl('', Validators.minLength(2))
+  })
 
-  searchInput: FormControl = new FormControl()
+  get searchText(): FormControl { return this.form.get('searchText') as FormControl; }
+
   searchResults: SearchEntry[]
-  searchText: string
 
   ngOnInit() {
-    this.searchInput
+    this
+      .searchText
       .valueChanges
       .subscribe(searchText => {
         if(searchText && searchText.length > 1) {
@@ -30,6 +35,6 @@ export class SearchComponent implements OnInit {
   }
 
   clearSearchInput() {
-    this.searchText = ''
+    this.searchText.setValue('');
   }
 }

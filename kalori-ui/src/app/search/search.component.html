@@ -1,8 +1,8 @@
 <div>
-  <form>
+  <form [formGroup]="form"> 
       <div class="form-group">
-          <input type="text" class="form-control" [formControl]="searchInput" [(ngModel)]="searchText" placeholder="Varunamn, t ex apelsin" autocomplete="off" />
-          <span class="fa fa-remove" (click)="clearSearchInput()" *ngIf="searchText"></span>
+          <input type="text" class="form-control" formControlName="searchText" placeholder="Varunamn, t ex apelsin" autocomplete="off" />
+          <span class="fa fa-remove" (click)="clearSearchInput()" *ngIf="searchText.valid"></span>
       </div>  
       
   </form>
