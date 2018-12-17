@@ -3,7 +3,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SearchComponent } from './search.component';
 import { LsvDbService } from '../lsv-db.service';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
 
 
 describe('SearchComponent', () => {
@@ -18,7 +19,9 @@ describe('SearchComponent', () => {
       ],
       imports: [
         NgbModule,
-        FormsModule
+        FormsModule,
+        BrowserModule,
+        ReactiveFormsModule
       ]      
     })
     .compileComponents();

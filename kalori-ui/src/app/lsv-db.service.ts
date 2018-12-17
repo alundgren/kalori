@@ -35,6 +35,12 @@ export class LsvDbService {
   }
 }
 
+class Item {
+  name: string
+  kcal: string
+  tokens: string[]  
+}
+
 export class SearchEntry {
   name: string
   kcal: string
