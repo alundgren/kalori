@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import * as naringsvardenJson from '../assets/naringsvarden.json';
 import * as dice from 'dice-coefficient';
+import * as doubleMetaphone from 'double-metaphone';
 
 //Entries are: ["Name", "Kcal","Protein","Fett","Kolhydrater"]
 let naringsvarden : string[][] = (naringsvardenJson as any).default;
@@ -10,21 +11,31 @@ let naringsvarden : string[][] = (naringsvardenJson as any).default;
   providedIn: 'root'
 })
 export class LsvDbService {  
+  private items: Item[]
   constructor() { 
-    
+    this.items = []
+    for(let v of naringsvarden) {
+      let name = v[0];
+      let i = {
+        name: name,
+        kcal: v[1],
+        tokens: this.tokenize(name)
+      }
+      this.items.push(i)
+    }    
+  }
+
+  private tokenize(n: string) : Set<string> {
+    return new Set<string>(doubleMetaphone(name))
   }
 
   search(nameFragment : string, maxCount: number) : SearchResult {
-    let n = nameFragment.toLocaleLowerCase()
-    let hits : SearchEntry[] = []    
-    for(let v of naringsvarden) {
-      let name = v[0];
-      if(name.toLocaleLowerCase().includes(n)) {
-        hits.push({
-          name: name,
-          kcal: v[1]
-        })
-      }
+    let n = this.tokenize(nameFragment)
+    let hits : ISearchEntry[] = []    
+    for(let v of this.items) {
+      if(this.isSuperset(v.tokens, n)) {
+        hits.push(v)
+      }        
     }
     
     hits.sort((x, y) => this.sortValue(nameFragment, y) - this.sortValue(nameFragment, x))
@@ -34,22 +45,31 @@ export class LsvDbService {
     }
   }
 
-  private sortValue(searchText: string, i: SearchEntry) : number {
+  private isSuperset(set, subset) {
+    for (let elem of subset) {
+        if (!set.has(elem)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+  private sortValue(searchText: string, i: ISearchEntry) : number {
     return dice(searchText, i.name)
   }  
 }
 
-class Item {
+class Item implements ISearchEntry {
   name: string
   kcal: string
-  tokens: string[]  
+  tokens: Set<string>
 }
 
 export class SearchResult {
-  entries: SearchEntry[]
+  entries: ISearchEntry[]
   totalEntries: number
 }
-export class SearchEntry {
+export interface ISearchEntry {
   name: string
   kcal: string
 }

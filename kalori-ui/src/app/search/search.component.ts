@@ -1,5 +1,5 @@
 import { Component, OnInit, SimpleChanges } from '@angular/core';
-import { LsvDbService, SearchEntry, SearchResult } from '../lsv-db.service';
+import { LsvDbService, ISearchEntry, SearchResult } from '../lsv-db.service';
 import { FormControl, FormGroup, Validators, AbstractControl } from '@angular/forms';
 
 
