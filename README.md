@@ -7,7 +7,6 @@ Production site: https://kalori.irudd.se/
 
 TODO:
 
-- Clear button for the search field. Make it work. Hide when empty.
 - Move FA to local dependancy
 - favicon and title
 - left corner logo and site link
@@ -15,3 +14,4 @@ TODO:
 - Word order search
 - Possibly metaphone or similar
 - Better solution for the clear icon. The margin pixel hack feels sucky.
+- Change hit limitation to infiniscroll

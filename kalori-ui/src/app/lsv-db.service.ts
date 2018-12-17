@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import * as naringsvardenJson from '../assets/naringsvarden.json';
+import * as dice from 'dice-coefficient';
 
 //Entries are: ["Name", "Kcal","Protein","Fett","Kolhydrater"]
 let naringsvarden : string[][] = (naringsvardenJson as any).default;
@@ -10,10 +11,10 @@ let naringsvarden : string[][] = (naringsvardenJson as any).default;
 })
 export class LsvDbService {  
   constructor() { 
-
+    
   }
 
-  search(nameFragment : string, maxCount: number) : SearchEntry[] {
+  search(nameFragment : string, maxCount: number) : SearchResult {
     let n = nameFragment.toLocaleLowerCase()
     let hits : SearchEntry[] = []    
     for(let v of naringsvarden) {
@@ -26,13 +27,16 @@ export class LsvDbService {
       }
     }
     
-    hits.sort((x, y) => x.name && y.name ? x.name.length - y.name.length : 1)
-    if(hits.length > maxCount) {
-      return hits.slice(0, maxCount)
-    } else {
-      return hits
+    hits.sort((x, y) => this.sortValue(nameFragment, y) - this.sortValue(nameFragment, x))
+    return {
+      entries: hits.length > maxCount ? hits.slice(0, maxCount): hits,
+      totalEntries: hits.length
     }
   }
+
+  private sortValue(searchText: string, i: SearchEntry) : number {
+    return dice(searchText, i.name)
+  }  
 }
 
 class Item {
@@ -41,6 +45,10 @@ class Item {
   tokens: string[]  
 }
 
+export class SearchResult {
+  entries: SearchEntry[]
+  totalEntries: number
+}
 export class SearchEntry {
   name: string
   kcal: string

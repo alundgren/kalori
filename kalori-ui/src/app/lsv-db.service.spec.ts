@@ -13,8 +13,9 @@ describe('LsvDbService', () => {
   it('should find apelsin', () => {
     const service: LsvDbService = TestBed.get(LsvDbService)
     let result = service.search('apelsin', 2)
-    expect(result.length).toBe(2, result)
-    expect(result[0].name).toBe('Apelsin')
-    expect(result[0].kcal).toBe('49')
+    expect(result.entries.length).toBe(2, result)
+    expect(result.totalEntries).toBe(16, result)
+    expect(result.entries[0].name).toBe('Apelsin')
+    expect(result.entries[0].kcal).toBe('49')
   })
 });

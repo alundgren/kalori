@@ -6,10 +6,13 @@
       </div>  
       
   </form>
-  <table class="table table-striped">
-    <tr *ngFor="let r of searchResults">
+  <table class="table table-striped" *ngIf="searchResults">
+    <tr *ngFor="let r of searchResults.entries">
       <td>{{r.name}}</td>
       <td>{{r.kcal}}</td>
+    </tr>
+    <tr *ngIf="searchResults.totalEntries > searchResults.entries.length">
+      <td colspan="2">... och ytterligare {{searchResults.totalEntries - searchResults.entries.length}} träffar som inte visas</td>
     </tr>
   </table>
 </div>
