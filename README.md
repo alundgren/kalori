@@ -11,7 +11,5 @@ TODO:
 - favicon and title
 - left corner logo and site link
 - github link in bottom if scrolling/paging can be made to work better
-- Word order search
-- Possibly metaphone or similar
 - Better solution for the clear icon. The margin pixel hack feels sucky.
 - Change hit limitation to infiniscroll

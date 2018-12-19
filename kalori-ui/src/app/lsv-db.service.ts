@@ -26,7 +26,7 @@ export class LsvDbService {
   }
 
   private tokenize(n: string) : Set<string> {
-    return new Set<string>(doubleMetaphone(name))
+    return new Set<string>(n.toLocaleLowerCase().split(' '))
   }
 
   search(nameFragment : string, maxCount: number) : SearchResult {
