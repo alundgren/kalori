@@ -20,6 +20,7 @@ export class SearchComponent implements OnInit {
   get searchText(): FormControl { return this.form.get('searchText') as FormControl; }
 
   searchResults: SearchResult
+  processedHits: SeachHit[]
 
   ngOnInit() {
     this
@@ -27,9 +28,19 @@ export class SearchComponent implements OnInit {
       .valueChanges
       .subscribe(searchText => {
         if(searchText && searchText.length > 1) {
-          this.searchResults = this.lsvDbService.search(searchText, 100)
+          this.searchResults = this.lsvDbService.search(searchText, 200)
+          this.processedHits = []
+          for(let e of this.searchResults.entries) {
+            this.processedHits.push({
+              highlightedName:e.name.replace(new RegExp(this.searchResults.searchExpression, 'gi'), match => {
+                return '<b>' + match + '</b>';
+              }),
+              kcal: e.kcal
+            })
+          }
         } else {
           this.searchResults = null
+          this.processedHits = null
         }
       });
   }
@@ -37,4 +48,9 @@ export class SearchComponent implements OnInit {
   clearSearchInput() {
     this.searchText.setValue('');
   }
+}
+
+class SeachHit {
+  highlightedName: string
+  kcal: string
 }
