@@ -21,3 +21,9 @@ steps:
     ng build --prod
   displayName: 'npm install and build'
   workingDirectory: kalori-ui
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'kalori-staticwebsite'
+    publishLocation: 'Container'
