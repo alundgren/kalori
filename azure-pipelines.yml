@@ -21,6 +21,12 @@ steps:
     ng build --prod
   displayName: 'npm install and build'
   workingDirectory: kalori-ui
+  
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)/kalori-ui/dist/kalori-ui'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
   inputs:
