@@ -13,6 +13,6 @@ FROM nginx:1.21.6-alpine
 RUN rm -rf /etc/nginx/conf.d
 RUN mkdir -p /etc/nginx/conf.d
 COPY kalori-ui/nginx.conf /etc/nginx/nginx.conf
-COPY --from=builder /usr/src/app/build /usr/share/nginx/html
+COPY --from=builder /usr/src/app/dist/kalori-ui /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
