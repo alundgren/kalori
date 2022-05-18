@@ -1,0 +1,12 @@
+@import 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css';
+
+html {
+    font-size: 20px;
+}
+
+.fa-remove {
+    width: 15px;
+    margin: -32px 20px;
+    float: right;
+    font-size: 20px;
+}

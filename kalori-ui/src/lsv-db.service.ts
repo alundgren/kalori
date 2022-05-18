@@ -1,19 +1,11 @@
-import { Injectable } from '@angular/core';
+import naringsVarden from './naringsvarden';
+import diceCoefficient from 'dice-coefficient';
 
-import * as naringsvardenJson from '../assets/naringsvarden.json';
-import * as dice from 'dice-coefficient';
-
-//Entries are: ["Name", "Kcal","Protein","Fett","Kolhydrater"]
-let naringsvarden : string[][] = (naringsvardenJson as any).default;
-
-@Injectable({
-  providedIn: 'root'
-})
-export class LsvDbService {  
+export default class LsvDbService {  
   private items: Item[]
   constructor() { 
     this.items = []
-    for(let v of naringsvarden) {
+    for(let v of naringsVarden) {
       let name = v[0];
       let i = {
         name: name.trim(),
@@ -82,17 +74,17 @@ export class LsvDbService {
   }
 
   private sortValue(searchText: string, i: ISearchEntry) : number {
-    return dice(searchText, i.name)
+    return diceCoefficient(searchText, i.name)
   }  
 }
 
-class Item implements ISearchEntry {
+interface Item extends ISearchEntry {
   name: string
   normalizedName: string  
   kcal: string
 }
 
-export class SearchResult {
+export interface SearchResult {
   entries: ISearchEntry[]
   searchExpression: string
   totalEntries: number
